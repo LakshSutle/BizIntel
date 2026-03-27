@@ -1,8 +1,175 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { jsPDF } from 'jspdf';
 import type { DashboardData } from '@/lib/types';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+function generatePDF(data: DashboardData): string {
+  const { inputs, snapshot, healthScore, recommendations, actionPlan, diagnosis } = data;
+  const doc = new jsPDF();
+  
+  let y = 20;
+  const leftMargin = 20;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - 40;
+
+  // Header
+  doc.setFillColor(99, 102, 241);
+  doc.rect(0, 0, pageWidth, 45, 'F');
+  
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24);
+  doc.setFont('helvetica', 'bold');
+  doc.text('BizIntel AI Report', leftMargin, 25);
+  
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`${inputs.business_type} | ${inputs.location}`, leftMargin, 37);
+
+  y = 60;
+  doc.setTextColor(30, 41, 59);
+
+  // Business Health Score Section
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Business Health Score', leftMargin, y);
+  y += 12;
+
+  const scoreColor = healthScore.riskLevel === 'Low' ? [34, 197, 94] : 
+                     healthScore.riskLevel === 'Medium' ? [245, 158, 11] : [239, 68, 68];
+  
+  doc.setFillColor(scoreColor[0], scoreColor[1], scoreColor[2]);
+  doc.circle(leftMargin + 15, y + 10, 15, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text(String(healthScore.score), leftMargin + 15, y + 15, { align: 'center' });
+
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'normal');
+  const diagnosisLines = doc.splitTextToSize(diagnosis, contentWidth - 50);
+  doc.text(diagnosisLines, leftMargin + 40, y + 5);
+  
+  y += Math.max(35, diagnosisLines.length * 6 + 15);
+
+  // Financial Snapshot
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Financial Snapshot', leftMargin, y);
+  y += 12;
+
+  doc.setFillColor(240, 253, 244);
+  doc.rect(leftMargin, y, 55, 25, 'F');
+  doc.setFillColor(254, 242, 242);
+  doc.rect(leftMargin + 60, y, 55, 25, 'F');
+  doc.setFillColor(238, 242, 255);
+  doc.rect(leftMargin + 120, y, 55, 25, 'F');
+
+  doc.setFontSize(10);
+  doc.setTextColor(100, 116, 139);
+  doc.text('Revenue', leftMargin + 27.5, y + 8, { align: 'center' });
+  doc.text('Expenses', leftMargin + 87.5, y + 8, { align: 'center' });
+  doc.text('Net Profit', leftMargin + 147.5, y + 8, { align: 'center' });
+
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(22, 101, 52);
+  doc.text(formatCurrency(snapshot.revenue), leftMargin + 27.5, y + 19, { align: 'center' });
+  doc.setTextColor(153, 27, 27);
+  doc.text(formatCurrency(snapshot.expenses), leftMargin + 87.5, y + 19, { align: 'center' });
+  doc.setTextColor(99, 102, 241);
+  doc.text(formatCurrency(snapshot.profit), leftMargin + 147.5, y + 19, { align: 'center' });
+
+  y += 35;
+
+  // Recommendations
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Strategic Recommendations', leftMargin, y);
+  y += 12;
+
+  recommendations.forEach((rec, index) => {
+    if (y > 250) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFillColor(248, 250, 252);
+    doc.rect(leftMargin, y, contentWidth, 25, 'F');
+    
+    doc.setFillColor(99, 102, 241);
+    doc.circle(leftMargin + 8, y + 8, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(10);
+    doc.text(String(index + 1), leftMargin + 8, y + 10, { align: 'center' });
+
+    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text(rec.title, leftMargin + 18, y + 8);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    const descLines = doc.splitTextToSize(rec.description, contentWidth - 25);
+    doc.text(descLines.slice(0, 2), leftMargin + 18, y + 16);
+
+    y += 30;
+  });
+
+  // Action Plan
+  if (y > 220) {
+    doc.addPage();
+    y = 20;
+  }
+
+  doc.setTextColor(30, 41, 59);
+  doc.setFontSize(16);
+  doc.setFont('helvetica', 'bold');
+  doc.text('4-Week Action Plan', leftMargin, y);
+  y += 12;
+
+  actionPlan.forEach((week) => {
+    if (y > 260) {
+      doc.addPage();
+      y = 20;
+    }
+
+    doc.setFillColor(99, 102, 241);
+    doc.rect(leftMargin, y, 3, 20, 'F');
+    
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(99, 102, 241);
+    doc.text(`Week ${week.week}: ${week.title}`, leftMargin + 8, y + 7);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(100, 116, 139);
+    doc.text(week.focus, leftMargin + 8, y + 15);
+
+    y += 25;
+  });
+
+  // Footer
+  const totalPages = doc.internal.pages.length - 1;
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(9);
+    doc.setTextColor(148, 163, 184);
+    doc.text(
+      `Generated by BizIntel AI | ${new Date().toLocaleDateString()}`,
+      pageWidth / 2,
+      doc.internal.pageSize.getHeight() - 10,
+      { align: 'center' }
+    );
+  }
+
+  return doc.output('datauristring').split(',')[1];
+}
 
 function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
@@ -211,12 +378,19 @@ export async function POST(request: Request) {
     }
 
     const htmlContent = generateEmailHTML(dashboardData);
+    const pdfBase64 = generatePDF(dashboardData);
 
     const { data, error } = await resend.emails.send({
       from: 'BizIntel AI <onboarding@resend.dev>',
       to: email,
       subject: `Your BizIntel AI Report - ${dashboardData.inputs.business_type}`,
       html: htmlContent,
+      attachments: [
+        {
+          filename: `BizIntel-Report-${dashboardData.inputs.business_type.replace(/\s+/g, '-')}.pdf`,
+          content: pdfBase64,
+        },
+      ],
     });
 
     if (error) {
