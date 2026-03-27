@@ -78,7 +78,7 @@ export function DashboardHeader({ inputs, dashboardData }: DashboardHeaderProps)
       }
 
       // Save the PDF
-      const fileName = `BI-Report-${inputs.business_type.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`;
+      const fileName = `${inputs.company_name.replace(/\s+/g, '-')}-Report-${new Date().toISOString().split('T')[0]}.pdf`;
       pdf.save(fileName);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -102,7 +102,7 @@ export function DashboardHeader({ inputs, dashboardData }: DashboardHeaderProps)
               <LayoutDashboard className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">BizIntel AI Report</h1>
+              <h1 className="text-xl font-bold text-foreground">{inputs.company_name}</h1>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mt-1">
                 <span className="flex items-center gap-1">
                   <Building2 className="h-3 w-3" />

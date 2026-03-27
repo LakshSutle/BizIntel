@@ -1,4 +1,5 @@
 export interface BusinessInputs {
+  company_name: string;
   business_type: string;
   revenue: number;
   expenses: number;

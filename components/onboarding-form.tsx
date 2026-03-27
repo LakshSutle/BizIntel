@@ -108,6 +108,7 @@ export function OnboardingForm() {
     const newErrors: Record<string, string> = {};
 
     if (step === 1) {
+      if (!formData.company_name?.trim()) newErrors.company_name = 'Required';
       if (!formData.business_type) newErrors.business_type = 'Required';
       if (!formData.location) newErrors.location = 'Required';
       if (!formData.business_age || formData.business_age < 0) newErrors.business_age = 'Required';
@@ -260,6 +261,25 @@ export function OnboardingForm() {
                     </div>
 
                     <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="company_name" className="text-foreground">Company Name</Label>
+                        <div className="relative">
+                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="company_name"
+                            placeholder="Enter your company name"
+                            className={`pl-10 ${errors.company_name ? 'border-destructive' : ''}`}
+                            value={formData.company_name || ''}
+                            onChange={(e) => updateField('company_name', e.target.value)}
+                          />
+                        </div>
+                        {errors.company_name && (
+                          <p className="text-xs text-destructive flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" /> {errors.company_name}
+                          </p>
+                        )}
+                      </div>
+
                       <div className="space-y-2">
                         <Label htmlFor="business_type" className="text-foreground">Business Type</Label>
                         <Select
