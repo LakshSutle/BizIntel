@@ -79,7 +79,7 @@ export function ExecutiveDashboard({ data }: ExecutiveDashboardProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader inputs={inputs} />
+      <DashboardHeader inputs={inputs} dashboardData={data} />
 
       {/* ✅ IMPORTANT: Changed ID to "report" */}
       <main id="report" className="container mx-auto px-4 py-6 space-y-6">

@@ -4,20 +4,23 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, Download, RefreshCw, Building2, 
-  MapPin, Calendar, Users, Loader2 
+  MapPin, Calendar, Users, Loader2, Mail 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDashboard } from '@/lib/dashboard-context';
 import { ThemeToggle } from '@/components/theme-toggle';
-import type { BusinessInputs } from '@/lib/types';
+import { EmailReportModal } from './email-report-modal';
+import type { BusinessInputs, DashboardData } from '@/lib/types';
 
 interface DashboardHeaderProps {
   inputs: BusinessInputs;
+  dashboardData: DashboardData;
 }
 
-export function DashboardHeader({ inputs }: DashboardHeaderProps) {
+export function DashboardHeader({ inputs, dashboardData }: DashboardHeaderProps) {
   const { setStep, setDashboardData } = useDashboard();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   const handleNewAnalysis = () => {
     setDashboardData(null);
@@ -134,6 +137,15 @@ export function DashboardHeader({ inputs }: DashboardHeaderProps) {
               <span className="hidden sm:inline">New Analysis</span>
             </Button>
             <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEmailModalOpen(true)}
+              className="gap-2"
+            >
+              <Mail className="h-4 w-4" />
+              <span className="hidden sm:inline">Email Report</span>
+            </Button>
+            <Button
               size="sm"
               onClick={handleDownloadPDF}
               disabled={isDownloading}
@@ -144,12 +156,18 @@ export function DashboardHeader({ inputs }: DashboardHeaderProps) {
               ) : (
                 <Download className="h-4 w-4" />
               )}
-              <span className="hidden sm:inline">Download PDF Report</span>
+              <span className="hidden sm:inline">Download PDF</span>
               <span className="sm:hidden">PDF</span>
             </Button>
           </div>
         </div>
       </div>
+
+      <EmailReportModal
+        open={isEmailModalOpen}
+        onOpenChange={setIsEmailModalOpen}
+        dashboardData={dashboardData}
+      />
     </motion.header>
   );
 }
