@@ -140,30 +140,41 @@ export function OnboardingForm() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(currentStep)) return;
+  console.log("🔥 BUTTON CLICKED");
 
-    // Fire-and-log the Supervity API call (non-blocking)
-    fetch("/api/generate", {
+  if (!validateStep(currentStep)) {
+    console.log("❌ Validation failed");
+    return;
+  }
+
+  try {
+    console.log("🚀 Calling API...");
+
+    const res = await fetch("/api/generate", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(formData),
-    })
-      .then(async (res) => {
-        const text = await res.text();
-        console.log("🔥 Supervity Raw Response:", text);
-      })
-      .catch((err) => {
-        console.error("❌ Supervity API Error:", err);
-      });
+    });
 
-    // Always generate the dashboard with local data so the app works
-    try {
-      await generateReport(formData as BusinessInputs);
-    } catch (error) {
-      console.error("❌ Error generating report:", error);
-    }
-  };
+    console.log("📡 API STATUS:", res.status);
 
+    const text = await res.text();
+
+    console.log("🔥 API RESPONSE:", text);
+
+  } catch (err) {
+    console.error("❌ API ERROR:", err);
+  }
+
+  // Keep your dashboard working
+  try {
+    await generateReport(formData as BusinessInputs);
+  } catch (error) {
+    console.error("❌ Dashboard Error:", error);
+  }
+};
   const progress = (currentStep / 4) * 100;
 
   return (
