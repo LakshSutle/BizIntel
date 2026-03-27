@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     formData.append("inputs[biggest_challenge]", body.biggest_challenge);
 
     const response = await fetch(
-      "https://auto-workflow-api.supervity.ai/api/v1/workflow-runs/execute/stream",
+      "https://auto-workflow-api.supervity.ai/api/v1/workflow-runs/execute",
       {
         method: "POST",
         headers: {
