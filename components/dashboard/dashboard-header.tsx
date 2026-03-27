@@ -37,8 +37,8 @@ export function DashboardHeader({ inputs, dashboardData }: DashboardHeaderProps)
         import('html2canvas'),
       ]);
 
-      // Get the dashboard content
-      const dashboardElement = document.getElementById('dashboard-content');
+      // Get the dashboard content (uses "report" ID from executive-dashboard)
+      const dashboardElement = document.getElementById('report');
       if (!dashboardElement) {
         throw new Error('Dashboard content not found');
       }
