@@ -139,10 +139,20 @@ export function Charts({ snapshot, salesChannels }: ChartsProps) {
         </div>
         <div className="h-48">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={revenueExpenseData} isAnimationActive={false}> {/* 🔥 FIX */}
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+            <BarChart data={revenueExpenseData} isAnimationActive={false}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={{ stroke: 'hsl(var(--border))' }}
+              />
+              <YAxis 
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tickLine={{ stroke: 'hsl(var(--border))' }}
+                tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="Revenue" fill={COLORS.emerald} />
               <Bar dataKey="Expenses" fill={COLORS.rose} />

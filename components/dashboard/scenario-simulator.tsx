@@ -177,14 +177,14 @@ export function ScenarioSimulator({ snapshot }: ScenarioSimulatorProps) {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                 <XAxis 
                   dataKey="month" 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
-                  axisLine={false} 
-                  tickLine={false}
+                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} 
+                  axisLine={{ stroke: 'hsl(var(--border))' }} 
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                 />
                 <YAxis 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
-                  axisLine={false} 
-                  tickLine={false}
+                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} 
+                  axisLine={{ stroke: 'hsl(var(--border))' }} 
+                  tickLine={{ stroke: 'hsl(var(--border))' }}
                   tickFormatter={(value) => `${value}%`}
                   domain={[0, 'dataMax + 10']}
                 />
