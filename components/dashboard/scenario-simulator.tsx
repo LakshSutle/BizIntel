@@ -174,19 +174,20 @@ export function ScenarioSimulator({ snapshot }: ScenarioSimulatorProps) {
                     <stop offset="95%" stopColor="hsl(245, 58%, 51%)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" vertical={false} />
                 <XAxis 
                   dataKey="month" 
-                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} 
-                  axisLine={{ stroke: 'hsl(var(--border))' }} 
-                  tickLine={{ stroke: 'hsl(var(--border))' }}
+                  tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} 
+                  axisLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }} 
+                  tickLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }}
                 />
                 <YAxis 
-                  tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} 
-                  axisLine={{ stroke: 'hsl(var(--border))' }} 
-                  tickLine={{ stroke: 'hsl(var(--border))' }}
+                  tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }} 
+                  axisLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }} 
+                  tickLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }}
                   tickFormatter={(value) => `${value}%`}
                   domain={[0, 'dataMax + 10']}
+                  width={45}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Area

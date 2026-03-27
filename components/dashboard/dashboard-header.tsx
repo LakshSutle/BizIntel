@@ -37,10 +37,10 @@ export function DashboardHeader({ inputs, dashboardData }: DashboardHeaderProps)
         import('html2canvas'),
       ]);
 
-      // Get the dashboard content (uses "report" ID from executive-dashboard)
+      // Get the dashboard content element with id="report" from executive-dashboard
       const dashboardElement = document.getElementById('report');
       if (!dashboardElement) {
-        throw new Error('Dashboard content not found');
+        throw new Error('Report element not found');
       }
 
       // Create canvas from the dashboard

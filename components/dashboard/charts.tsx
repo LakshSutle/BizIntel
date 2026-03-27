@@ -140,18 +140,19 @@ export function Charts({ snapshot, salesChannels }: ChartsProps) {
         <div className="h-48">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={revenueExpenseData} isAnimationActive={false}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.2)" />
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
-                tickLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }}
+                axisLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }}
+                tickLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }}
               />
               <YAxis 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
-                tickLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 500 }}
+                axisLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }}
+                tickLine={{ stroke: 'rgba(148, 163, 184, 0.3)' }}
                 tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                width={50}
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="Revenue" fill={COLORS.emerald} />
